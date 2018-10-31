@@ -16,6 +16,7 @@
 #include "ShaderProgram.hpp"
 #include "Camera.h"
 #include "MeshObject.h"
+#include "Texture.h"
 
 /*******************************************
  ****** FUNCTION/VARIABLE DECLARATIONS *****
@@ -91,16 +92,19 @@ int main()
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    /****************** Models ********************/
-    MeshObject bunny;
-    bunny.readOBJ("../objects/bunny.obj");
-
     /***************** Shaders ********************/
     // Build and compile the shader program
     std::string vertexFilename = "../shaders/passThrough.vert";
     std::string fragmentFilename = "../shaders/passThrough.frag";
     ShaderProgram passThroughShader(vertexFilename, "", "", "", fragmentFilename);
     passThroughShader();
+
+    /****************** Models ********************/
+
+    MeshObject trex;
+    trex.readOBJ("../objects/trex.obj");
+
+    Texture textureTrex = Texture("../textures/trex.tga");
 
     /**************** Uniform variables **********************/
     GLint viewLoc = glGetUniformLocation(passThroughShader, "view");
@@ -130,7 +134,8 @@ int main()
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         /**************** RENDER STUFF ****************/
-        bunny.render();
+        glBindTexture( GL_TEXTURE_2D, textureTrex.textureID);
+        trex.render();
 
         // Swap front and back buffers
         glEnable(GL_CULL_FACE);
